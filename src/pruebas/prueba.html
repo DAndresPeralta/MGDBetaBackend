@@ -1,0 +1,72 @@
+`
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remito #${order.serie}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      .info {
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .total {
+        text-align: right;
+        font-size: 16px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Remito #${order.serie}</h1>
+    <div class="info">
+      <p><strong>Fecha:</strong> ${ order.date.toISOString().split("T")[0] }</p>
+      <p><strong>Cliente:</strong> ${order.client}</p>
+      <p><strong>CUIL:</strong> ${order.cuil}</p>
+      <p><strong>Email:</strong> ${order.email}</p>
+      <p><strong>Condición de IVA:</strong> ${order.taxpayer}</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${order.product .map( (item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>$${(item.price * item.quantity).toFixed(2)}</td>
+        </tr>
+        ` ) .join("")}
+      </tbody>
+    </table>
+    <p class="total">Total: $${order.total.toFixed(2)}</p>
+  </body>
+</html>
+`

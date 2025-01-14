@@ -19,7 +19,7 @@ const orderBetaSchema = new mongoose.Schema(
       },
     ],
     total: Number,
-    attach: String,
+    attach: Buffer,
     status: Boolean,
   },
   { timestamps: true }

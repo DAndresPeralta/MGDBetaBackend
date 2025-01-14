@@ -6,6 +6,7 @@ import {
   createOrderController,
   getAllOrdersController,
   getOrderByIdController,
+  regeneratePDF,
   updateOrderController,
   updateOrderStatusController,
   viewPDFController,
@@ -35,5 +36,6 @@ router.put(
   updateOrderController
 );
 router.get("/pdfview/:id", viewPDFController);
+router.get("/pdfrec/:id", regeneratePDF);
 
 export default router;

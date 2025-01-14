@@ -8,6 +8,7 @@ import cors from "cors";
 import config from "./config/dot.js";
 import logger from "./utils/logger.js";
 import compression from "./config/compression.js";
+import "./utils/cron.js";
 
 // --- Routers
 import userRouter from "./router/user.router.js";

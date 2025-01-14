@@ -73,7 +73,7 @@ const createPDFPuppeteer = async (order) => {
     });
     await page.close();
 
-    return pdfBuffer;
+    return Buffer.from(pdfBuffer);
   } catch (error) {
     logger.error(`Error al crear el PDF: ${error.message}`);
     return null;
@@ -253,18 +253,31 @@ export const createOrderController = async (req, res) => {
   }
 };
 
-// -- Preliminar
 export const viewPDFController = async (req, res) => {
   try {
     const { id } = req.params;
 
     const order = await getOrderById(id);
     const pdf = order.attach;
-    console.log("Tipo de pdf:", typeof pdf);
-    console.log("Es Buffer?", Buffer.isBuffer(pdf));
-    console.log("Primeros 20 caracteres:", pdf.toString().substring(0, 20));
+    logger.info("PDF obtenido");
 
-    logger.info("PDF View.");
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", 'inline; filename="archivo.pdf"');
+    res.send(pdf);
+  } catch (error) {
+    logger.error(`Error al visualizar el PDF: ${error.message}`);
+    res.send({ message: error.message });
+  }
+};
+
+export const regeneratePDF = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let order = await getOrderById(id);
+    order.attach = await createPDFPuppeteer(order);
+    await updateOrder(id, order);
+
+    const pdf = order.attach;
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", 'inline; filename="archivo.pdf"');
     res.send(pdf);

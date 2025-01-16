@@ -28,3 +28,7 @@ export const updateOrder = async (id, order) => {
 export const updateOrderStatus = async (id, status) => {
   return await orderBetaModel.updateOne({ _id: id }, { $set: { status } });
 };
+
+export const deleteAttachOrder = async (id) => {
+  return await orderBetaModel.updateOne({ _id: id }, { $set: { attach: "" } });
+};

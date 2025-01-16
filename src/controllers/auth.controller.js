@@ -27,7 +27,7 @@ export const loginUserController = (req, res, next) => {
         httpOnly: true,
         secure: true,
         maxAge: 600000,
-        sameSite: "lax", //VER para LOCAL
+        sameSite: "none", //VER para LOCAL
         //   path: "/", // This line is to confirm
       });
 

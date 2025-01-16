@@ -27,7 +27,8 @@ export const loginUserController = (req, res, next) => {
         httpOnly: true,
         secure: true,
         maxAge: 600000,
-        sameSite: "none", //VER para LOCAL
+        sameSite: "none", //VER para LOCAL - usar "lax" o borrar atributo
+        domain: "mgd-beta-front.vercel.app", //Borrar para local
         //   path: "/", // This line is to confirm
       });
 

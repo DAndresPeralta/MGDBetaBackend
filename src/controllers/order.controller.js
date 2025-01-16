@@ -6,6 +6,7 @@ import {
   getOrderById,
   updateOrder,
   updateOrderStatus,
+  deleteAttachOrder,
 } from "../services/order.services.js";
 
 // -- Utils
@@ -329,6 +330,7 @@ export const updateOrderStatusController = async (req, res) => {
       });
     }
 
+    await deleteAttachOrder(id);
     const result = await updateOrderStatus(id, status);
 
     logger.info("Estado de la orden actualizado con éxito.");

@@ -22,7 +22,12 @@ const router = express.Router();
 
 router.get("/order", getAllOrdersController);
 router.get("/order/:id", getOrderByIdController);
-router.post("/order", validateCreateOrder, createOrderController);
+router.post(
+  "/order",
+  passportCall("jwt"),
+  validateCreateOrder,
+  createOrderController
+);
 router.put(
   "/order/:id",
   passportCall("jwt"),
@@ -35,7 +40,7 @@ router.put(
   authorization("ADMIN"),
   updateOrderController
 );
-router.get("/pdfview/:id", viewPDFController);
-router.get("/pdfrec/:id", regeneratePDF);
+router.get("/pdfview/:id", passportCall("jwt"), viewPDFController);
+router.get("/pdfrec/:id", passportCall("jwt"), regeneratePDF);
 
 export default router;

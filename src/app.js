@@ -33,9 +33,10 @@ app.use(
     origin: config.corsOrigin,
     methods: "GET, POST, PUT, DELETE",
     credentials: true,
-    allowedHeaders: "Content-Type, Authorization, X-Requested-With, Accept",
+    allowedHeaders: "Content-Type, Authorization",
   })
 );
+app.options('*', cors());
 app.use(compression);
 
 // --- BD Settings

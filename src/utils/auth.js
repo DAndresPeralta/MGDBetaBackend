@@ -110,6 +110,7 @@ export const checkToken = (req, res, next) => {
 
 export const coockieExtractor = (req) => {
   let token = null;
+  console.log(`cookieExt ${req.cookies.jwt}`);
   if (req && req.cookies) {
     token = req.cookies["jwt"];
   }

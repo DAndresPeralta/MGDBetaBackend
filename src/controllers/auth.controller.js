@@ -28,6 +28,7 @@ export const loginUserController = (req, res, next) => {
         secure: true,
         maxAge: 600000,
         sameSite: "none", //VER para LOCAL - usar "lax" o borrar atributo
+        domain: "https://mgdbetabackend.onrender.com",
 
         //   path: "/", // This line is to confirm
       });

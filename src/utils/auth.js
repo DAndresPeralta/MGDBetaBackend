@@ -121,6 +121,7 @@ export const coockieExtractor = (req) => {
 // --- Middlewares
 export const passportCall = (Strategy) => {
   return async (req, res, next) => {
+     console.log(`cookieExt ${req.cookies.jwt}`);
     passport.authenticate(Strategy, (err, user, info) => {
       if (err) return next(err);
       if (!user) {

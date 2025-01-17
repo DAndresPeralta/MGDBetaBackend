@@ -33,7 +33,7 @@ app.use(
     origin: 'https://mgd-beta-front.vercel.app',
     methods: "GET, POST, PUT, DELETE",
     credentials: true,
-    allowedHeaders: "Content-Type, Authorization",
+    allowedHeaders: "Content-Type, Authorization, Set-Cookie",
   })
 );
 // app.options('*', cors());

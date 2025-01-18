@@ -20,7 +20,9 @@ import EErrors from "../errors/enums.js";
 // -- Modules
 import PDFDocument from "pdfkit";
 import nodemailer from "nodemailer";
-import puppeteer from "puppeteer";
+// import puppeteer from "puppeteer";
+import chromium from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 
 // -- Templates
 import { pdfTemplate } from "../templates/pdf.templates.js";
@@ -34,6 +36,9 @@ const initializeBrowser = async () => {
     browser = await puppeteer.launch({
       // headless: true,
       // args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
   }
 };

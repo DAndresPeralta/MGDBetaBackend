@@ -47,7 +47,7 @@ export const loginUserController = (req, res, next) => {
 export const authUserController = (req, res) => {
   try {
     if (req.user) {
-      console.log("Usuario autenticado:", req.user);
+      // console.log("Usuario autenticado:", req.user);
       return res.status(200).json({ success: true });
     } else {
       console.log("JWT no válido o no autenticado");

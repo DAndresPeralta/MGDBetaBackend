@@ -110,18 +110,15 @@ export const checkToken = (req, res, next) => {
 
 export const coockieExtractor = (req) => {
   let token = null;
-  console.log(`cookieExt ${req.cookies.jwt}`);
   if (req && req.cookies) {
     token = req.cookies["jwt"];
   }
-  console.log(token);
   return token;
 };
 
 // --- Middlewares
 export const passportCall = (Strategy) => {
   return async (req, res, next) => {
-     console.log(`cookieExt ${req.cookies.jwt}`);
     passport.authenticate(Strategy, (err, user, info) => {
       if (err) return next(err);
       if (!user) {

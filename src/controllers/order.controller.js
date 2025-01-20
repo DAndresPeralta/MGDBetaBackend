@@ -20,9 +20,9 @@ import EErrors from "../errors/enums.js";
 // -- Modules
 import PDFDocument from "pdfkit";
 import nodemailer from "nodemailer";
-// import puppeteer from "puppeteer";
-import chromium from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
+import htmlPdf from "html-pdf";
+import { promisify } from "util";
 
 // -- Templates
 import { pdfTemplate } from "../templates/pdf.templates.js";
@@ -63,6 +63,38 @@ const serieIncrement = (lastOrder) => {
   } catch (error) {
     logger.error(`Error al incrementar la serie: ${error.message}`);
     return null;
+  }
+};
+
+const createHtmlPDF = async (order) => {
+  // const createPdf = promisify(htmlPdf.create);
+
+  try {
+    const options = {
+      format: "A4",
+      border: {
+        top: "10mm",
+        right: "10mm",
+        bottom: "10mm",
+        left: "10mm",
+      },
+    };
+
+    // const buffer = await createPdf(pdf2Template(order), options);
+
+    const attachBuffer = new Promise((resolve, reject) => {
+      htmlPdf.create(pdf2Template(order), options).toBuffer((err, buffer) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(buffer);
+        }
+      });
+    });
+
+    return attachBuffer;
+  } catch (error) {
+    console.error(`Error al crear el PDF: ${error.message}`);
   }
 };
 
@@ -245,7 +277,7 @@ export const createOrderController = async (req, res) => {
       status: true,
     };
 
-    order.attach = await createPDFPuppeteer(order);
+    order.attach = await createHtmlPDF(order);
 
     const result = await createOrder(order);
 
@@ -280,7 +312,7 @@ export const regeneratePDF = async (req, res) => {
   try {
     const { id } = req.params;
     let order = await getOrderById(id);
-    order.attach = await createPDFPuppeteer(order);
+    order.attach = await createHtmlPDF(order);
     await updateOrder(id, order);
 
     const pdf = order.attach;

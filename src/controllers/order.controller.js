@@ -22,7 +22,6 @@ import PDFDocument from "pdfkit";
 import nodemailer from "nodemailer";
 import puppeteer from "puppeteer";
 import htmlPdf from "html-pdf";
-import { promisify } from "util";
 
 // -- Templates
 import { pdfTemplate } from "../templates/pdf.templates.js";

@@ -9,4 +9,8 @@ router.get("/test", passportCall("jwt"), authorization("ADMIN"), (req, res) => {
   res.send("Hola mundo");
 });
 
+router.get("/init", (req, res) => {
+  res.send("Hola mundo");
+});
+
 export default router;

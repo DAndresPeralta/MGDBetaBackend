@@ -9,11 +9,11 @@ export const pdf2Template = (order) => {
           body {
               font-family: Arial, sans-serif;
               margin: 0;
-              padding: 20px;
-              font-size: 12px;
+              padding: 10px;
+              font-size: 8px;
           }
           .container {
-              border: 1px solid #000;
+             
               padding: 10px;
               max-width: 800px;
               margin: 0 auto;

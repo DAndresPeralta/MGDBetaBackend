@@ -13,7 +13,7 @@ export const pdf2Template = (order) => {
               font-size: 8px;
           }
           .container {
-             
+              border: 1px solid #000;
               padding: 10px;
               max-width: 800px;
               margin: 0 auto;

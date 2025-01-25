@@ -28,19 +28,19 @@ import { pdfTemplate } from "../templates/pdf.templates.js";
 import { pdf2Template } from "../templates/pdf2.templates.js";
 
 // -- Local Variables
-let browser;
+// let browser;
 
-const initializeBrowser = async () => {
-  if (!browser) {
-    browser = await puppeteer.launch({
-      // headless: true,
-      // args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    });
-  }
-};
+// const initializeBrowser = async () => {
+//   if (!browser) {
+//     browser = await puppeteer.launch({
+//       // headless: true,
+//       // args: ["--no-sandbox", "--disable-setuid-sandbox"],
+//       args: chromium.args,
+//       executablePath: await chromium.executablePath,
+//       headless: chromium.headless,
+//     });
+//   }
+// };
 
 // -- Local Functions
 const serieIncrement = (lastOrder) => {
@@ -66,20 +66,10 @@ const serieIncrement = (lastOrder) => {
 };
 
 const createHtmlPDF = async (order) => {
-  // const createPdf = promisify(htmlPdf.create);
-
   try {
     const options = {
       format: "A4",
-      border: {
-        top: "10mm",
-        right: "10mm",
-        bottom: "10mm",
-        left: "10mm",
-      },
     };
-
-    // const buffer = await createPdf(pdf2Template(order), options);
 
     const attachBuffer = new Promise((resolve, reject) => {
       htmlPdf.create(pdf2Template(order), options).toBuffer((err, buffer) => {
@@ -259,10 +249,18 @@ export const createOrderController = async (req, res) => {
       ? serieIncrement(lastOrder.serie)
       : `A-00000001`;
 
-    const total = product.reduce(
+    const subtotal = product.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
+
+    const total = product.reduce((acc, item) => {
+      if (item.discount === 0) {
+        return acc + item.price * item.quantity;
+      } else {
+        return acc + item.price * (1 - item.discount / 100) * item.quantity;
+      }
+    }, 0);
 
     const order = {
       serie: newSerieNumber,
@@ -272,6 +270,7 @@ export const createOrderController = async (req, res) => {
       email,
       taxpayer,
       product,
+      subtotal,
       total,
       status: true,
     };

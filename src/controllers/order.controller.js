@@ -262,9 +262,9 @@ export const createOrderController = async (req, res) => {
       }
     }, 0);
 
-    if (taxpayer === "IVA EXCENTO") total = total * (1 - 21 / 100);
+    if (taxpayer === "CONSUMIDOR FINAL") total = total * (1 + 21 / 100);
     if (taxpayer === "CONSUMIDOR FINAL - MAT. PRIMAS")
-      total = total * (1 - 10.5 / 100);
+      total = total * (1 + 10.5 / 100);
 
     const order = {
       serie: newSerieNumber,

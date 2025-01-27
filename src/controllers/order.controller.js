@@ -254,7 +254,7 @@ export const createOrderController = async (req, res) => {
       0
     );
 
-    const total = product.reduce((acc, item) => {
+    let total = product.reduce((acc, item) => {
       if (item.discount === 0) {
         return acc + item.price * item.quantity;
       } else {

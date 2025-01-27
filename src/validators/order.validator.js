@@ -18,6 +18,7 @@ export const validateCreateOrder = [
       "IVA EXCENTO",
       "MONOTRIBUTISTA",
       "RESPONSABLE INSCRIPTO",
+      "CONSUMIDOR FINAL - MAT. PRIMAS",
     ]),
   check("product").exists().isArray().not().isEmpty(),
   check("product.*.name")

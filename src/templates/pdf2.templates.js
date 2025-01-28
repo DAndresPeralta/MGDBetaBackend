@@ -95,7 +95,7 @@ export const pdf2Template = (order) => {
     <div class="container">
         <h1>COMPROBANTE</h1>
         <div class="header">
-            <img src="logo_url" alt="Logo de la empresa" class="logo" />
+            <img src="./LOGO-CHIPI.svg" alt="Logo de la empresa" class="logo" />
             <div class="company-info">
                 <p><strong>EMPRESA S.A.</strong></p>
                 <p>Calle Ejemplo 123, Ciudad</p>

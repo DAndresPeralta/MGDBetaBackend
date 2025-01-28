@@ -66,7 +66,13 @@ export const authUserController = (req, res) => {
 
 export const logoutUserController = (req, res) => {
   try {
-    res.clearCookie("jwt", { httpOnly: true, secure: true, path: "/" });
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      domain: "mgdbetabackend.onrender.com",
+      path: "/",
+    });
 
     if (!req.cookies.jwt) {
       logger.warn("No se encontró la cookie");

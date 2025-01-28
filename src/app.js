@@ -25,12 +25,13 @@ const app = express();
 const PORT = config.port;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 app.use(cookieParser(config.cookieSecret));
 app.use(passport.initialize());
 initializPassport();
 app.use(
   cors({
-    origin: 'https://mgd-beta-front.vercel.app',
+    origin: "https://mgd-beta-front.vercel.app",
     methods: "GET, POST, PUT, DELETE",
     credentials: true,
     allowedHeaders: "Content-Type, Authorization, Set-Cookie",

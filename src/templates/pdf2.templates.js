@@ -104,7 +104,7 @@ export const pdf2Template = (order) => {
             <div>
                 <p><strong>Comprobante N°:</strong> ${order.serie}</p>
                 <p><strong>Fecha:</strong> ${
-                  order.date.toISOString().split("T")[0]
+                  order.date.toISOString().split("T")[1]
                 }</p>
             </div>
         </div>

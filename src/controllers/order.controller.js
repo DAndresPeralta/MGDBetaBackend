@@ -241,7 +241,7 @@ export const getOrderByIdController = async (req, res) => {
 
 export const createOrderController = async (req, res) => {
   try {
-    const { client, cuil, email, taxpayer, product } = req.body;
+    const { date, client, cuil, email, taxpayer, product } = req.body;
 
     const lastOrder = await getLastOrder();
 
@@ -268,7 +268,7 @@ export const createOrderController = async (req, res) => {
 
     const order = {
       serie: newSerieNumber,
-      date: new Date(),
+      date: date ? new Date(date) : new Date(),
       client,
       cuil,
       email,

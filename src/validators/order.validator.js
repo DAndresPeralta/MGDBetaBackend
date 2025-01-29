@@ -2,7 +2,7 @@
 import { check } from "express-validator";
 import { validationResult } from "express-validator";
 
-const chars = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ"´()-\s]*$/;
+const chars = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ"´().-\s]*$/;
 
 export const validateCreateOrder = [
   check("client")

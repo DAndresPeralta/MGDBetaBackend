@@ -5,7 +5,12 @@ import { validationResult } from "express-validator";
 const chars = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s]*$/;
 
 export const validateCreateOrder = [
-  check("client").exists().not().isEmpty().isLength({ max: 25 }).matches(chars),
+  check("client")
+    .exists()
+    .not()
+    .isEmpty()
+    .isLength({ max: 128 })
+    .matches(chars),
   check("cuil").exists().not().isEmpty().isLength({ max: 13 }),
   check("email").exists().not().isEmpty().isEmail().isLength({ max: 128 }),
   check("taxpayer")
@@ -25,7 +30,7 @@ export const validateCreateOrder = [
     .exists()
     .not()
     .isEmpty()
-    .isLength({ max: 25 })
+    .isLength({ max: 128 })
     .matches(chars),
   check("product.*.quantity").exists().isInt({ min: 1 }),
   check("product.*.price").exists().isFloat({ min: 0.1 }),

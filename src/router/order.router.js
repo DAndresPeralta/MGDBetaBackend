@@ -28,19 +28,30 @@ router.post(
   validateCreateOrder,
   createOrderController
 );
+// Eliminar
 router.put(
   "/order/:id",
   passportCall("jwt"),
-  authorization("ADMIN"),
+  authorization("MASTER", "ADMIN"),
   updateOrderStatusController
 );
 router.put(
   "/orderUpdate/:id",
   passportCall("jwt"),
-  authorization("ADMIN"),
+  authorization("MASTER", "ADMIN"),
   updateOrderController
 );
-router.get("/pdfview/:id", passportCall("jwt"), viewPDFController);
-router.get("/pdfrec/:id", passportCall("jwt"), regeneratePDF);
+router.get(
+  "/pdfview/:id",
+  passportCall("jwt"),
+  authorization("MASTER", "ADMIN", "USER"),
+  viewPDFController
+);
+router.get(
+  "/pdfrec/:id",
+  passportCall("jwt"),
+  authorization("MASTER", "ADMIN", "USER"),
+  regeneratePDF
+);
 
 export default router;

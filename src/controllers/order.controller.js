@@ -263,7 +263,8 @@ export const createOrderController = async (req, res) => {
       }
     }, 0);
 
-    if (taxpayer === "CONSUMIDOR FINAL") total = total * (1 + 21 / 100);
+    if (taxpayer === "CONSUMIDOR FINAL" || taxpayer === "RESPONSABLE INSCRIPTO")
+      total = total * (1 + 21 / 100);
     if (taxpayer === "CONSUMIDOR FINAL - MAT. PRIMAS")
       total = total * (1 + 10.5 / 100);
 

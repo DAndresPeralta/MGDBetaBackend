@@ -16,7 +16,7 @@ export const pdf2Template = (order) => {
             border: 1px solid #000;
             padding: 7px;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 1rem auto;
         }
         h1 {
             text-align: center;

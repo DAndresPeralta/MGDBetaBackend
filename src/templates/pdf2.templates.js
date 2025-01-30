@@ -55,6 +55,8 @@ export const pdf2Template = (order) => {
             border: 1px solid #000;
             padding: 5px;
             text-align: right;
+            overflow: hidden;
+            word-wrap: break-word;
         }
         .products-table tr {
             page-break-inside: avoid;

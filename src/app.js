@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import helmet from "helmet";
 
 // --- Imports files
 import config from "./config/dot.js";
@@ -37,6 +38,7 @@ app.use(
     allowedHeaders: "Content-Type, Authorization, Set-Cookie",
   })
 );
+app.use(helmet());
 // app.options('*', cors());
 app.use(compression);
 

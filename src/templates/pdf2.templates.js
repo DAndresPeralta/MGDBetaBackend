@@ -6,6 +6,9 @@ export const pdf2Template = (order) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Comprobante N° ${order.serie}</title>
     <style>
+        @page {
+            margin-bottom: 20mm; /* Agregar margen inferior */
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;

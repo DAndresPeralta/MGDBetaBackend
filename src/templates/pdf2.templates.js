@@ -56,6 +56,9 @@ export const pdf2Template = (order) => {
             padding: 5px;
             text-align: right;
         }
+        .products-table tr {
+            page-break-inside: avoid;
+        }
         .total {
             text-align: right;
             font-weight: bold;

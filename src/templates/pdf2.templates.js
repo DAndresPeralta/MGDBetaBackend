@@ -63,10 +63,10 @@ export const pdf2Template = (order) => {
             text-align: right;
             overflow: hidden;
             word-wrap: break-word;
-            font-size: 7px; /* Reducir el tamaño de la fuente */
+            font-size: 8px; /* Reducir el tamaño de la fuente */
         }
         .products-table tr {
-            page-break-inside: avoid; /* Evitar que las filas se corten */
+            page-break-inside: always;
         }
         .total {
             text-align: right;

@@ -69,6 +69,7 @@ const createHtmlPDF = async (order) => {
   try {
     const options = {
       format: "A4",
+      border: "10mm",
     };
 
     const attachBuffer = new Promise((resolve, reject) => {

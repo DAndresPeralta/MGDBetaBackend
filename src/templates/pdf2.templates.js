@@ -13,7 +13,7 @@ export const pdf2Template = (order) => {
         }
         body {
             font-family: Arial, sans-serif;
-            margin: 10mm 0 10mm 0;
+            margin: 0;
             padding: 5px;
             font-size: 8px;
         }
@@ -21,7 +21,7 @@ export const pdf2Template = (order) => {
             border: 1px solid #000;
             padding: 7px;
             max-width: 800px;
-            margin: 10mm auto 10mm;
+            margin: 5nn auto;
         }
         h1 {
             text-align: center;

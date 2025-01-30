@@ -7,7 +7,9 @@ export const pdf2Template = (order) => {
     <title>Comprobante N° ${order.serie}</title>
     <style>
         @page {
-            margin-bottom: 20mm; /* Agregar margen inferior */
+            size: A4;
+            margin: 20mm;
+            margin-bottom: 30mm;
         }
         body {
             font-family: Arial, sans-serif;

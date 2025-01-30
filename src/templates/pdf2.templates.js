@@ -9,7 +9,7 @@ export const pdf2Template = (order) => {
         @page {
             size: A4;
             margin: 20mm;
-            margin-bottom: 30mm;
+            margin-bottom: 30mm; /* Margen inferior más grande */
         }
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +55,7 @@ export const pdf2Template = (order) => {
         .products-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         .products-table th, .products-table td {
             border: 1px solid #000;
@@ -62,9 +63,10 @@ export const pdf2Template = (order) => {
             text-align: right;
             overflow: hidden;
             word-wrap: break-word;
+            font-size: 7px; /* Reducir el tamaño de la fuente */
         }
         .products-table tr {
-            page-break-inside: avoid;
+            page-break-inside: avoid; /* Evitar que las filas se corten */
         }
         .total {
             text-align: right;
@@ -89,6 +91,9 @@ export const pdf2Template = (order) => {
             border-top: 1px solid #000;
             margin-top: 50px;
             padding-top: 5px;
+        }
+        .page-break {
+            page-break-before: always; /* Forzar salto de página */
         }
         @media (max-width: 600px) {
             .header, .signatures {

@@ -39,6 +39,7 @@ router.put(
   "/orderUpdate/:id",
   passportCall("jwt"),
   authorization("MASTER", "ADMIN"),
+  validateCreateOrder,
   updateOrderController
 );
 router.get(

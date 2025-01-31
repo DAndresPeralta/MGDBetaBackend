@@ -65,6 +65,22 @@ const serieIncrement = (lastOrder) => {
   }
 };
 
+const totalPrice = (product, taxpayer) => {
+  let total = product.reduce((acc, item) => {
+    if (item.discount === 0) {
+      return acc + item.price * item.quantity;
+    } else {
+      return acc + item.price * (1 - item.discount / 100) * item.quantity;
+    }
+  }, 0);
+
+  if (taxpayer === "CONSUMIDOR FINAL") total = total * (1 + 21 / 100);
+  if (taxpayer === "CONSUMIDOR FINAL - MAT. PRIMAS")
+    total = total * (1 + 10.5 / 100);
+
+  return total;
+};
+
 const createHtmlPDF = async (order) => {
   try {
     const options = {
@@ -255,18 +271,7 @@ export const createOrderController = async (req, res) => {
       0
     );
 
-    let total = product.reduce((acc, item) => {
-      if (item.discount === 0) {
-        return acc + item.price * item.quantity;
-      } else {
-        return acc + item.price * (1 - item.discount / 100) * item.quantity;
-      }
-    }, 0);
-
-    if (taxpayer === "CONSUMIDOR FINAL" || taxpayer === "RESPONSABLE INSCRIPTO")
-      total = total * (1 + 21 / 100);
-    if (taxpayer === "CONSUMIDOR FINAL - MAT. PRIMAS")
-      total = total * (1 + 10.5 / 100);
+    let total = totalPrice(product, taxpayer);
 
     const order = {
       serie: newSerieNumber,
@@ -333,18 +338,28 @@ export const regeneratePDF = async (req, res) => {
 export const updateOrderController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { client, cuil, email, product } = req.body;
+    const { date, client, cuil, email, taxpayer, product } = req.body;
+
+    const subtotal = product.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+
+    let total = totalPrice(product, taxpayer);
 
     const update = {
+      date,
       client,
       cuil,
       email,
       taxpayer,
       product,
+      subtotal,
+      total,
     };
 
     const order = await getOrderById(id);
-    logger.debug(`Orden encontrada: ${order}`);
+    logger.warn(`Orden encontrada para modificar: ${order}`);
 
     Object.assign(order, update);
 

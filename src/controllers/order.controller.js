@@ -340,6 +340,9 @@ export const updateOrderController = async (req, res) => {
     const { id } = req.params;
     const { date, client, cuil, email, taxpayer, product } = req.body;
 
+    // Elimino el attach previo a la modificación.
+    await deleteAttachOrder(id);
+
     const subtotal = product.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0

@@ -176,7 +176,7 @@ export const pdf2Template = (order) => {
             </tbody>
         </table>
 
-        <h3> class="total">Precio Final: $${order.total.toFixed(2)} </h3>
+        <h3 class="total"> Precio Final: $${order.total.toFixed(2)} </h3>
 
         <div class="signatures">
             <div class="signature">

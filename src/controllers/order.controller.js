@@ -200,7 +200,7 @@ const mailing = async (order) => {
       from: config.userEmail,
       to: order.email,
       subject: `Remito #${order.serie}`,
-      text: `Hola ${order.client}, adjunto el remito de tu compra.`,
+      text: `Hola ${order.client}, adjunto el comprobante de tu compra.`,
       attachments: [
         {
           filename: `Remito-${order.serie}.pdf`,

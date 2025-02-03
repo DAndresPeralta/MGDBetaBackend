@@ -20,6 +20,7 @@ export const validateCreateOrder = [
     .customSanitizer((value) => value.toUpperCase())
     .isIn([
       "CONSUMIDOR FINAL",
+      "PRESUPUESTO",
       "IVA EXCENTO",
       "MONOTRIBUTISTA",
       "RESPONSABLE INSCRIPTO",

@@ -110,7 +110,7 @@ export const pdf2Template = (order) => {
     <div class="container">
         <h1>COMPROBANTE</h1>
         <div class="header">
-            <img src="https://mgdbetabackend.onrender.com/LOGO-CHIPI.svg" alt="Logo de la empresa" class="logo" />
+            <img src="https://mgdbetabackend.onrender.com/public/LOGO-CHIPI.svg" alt="Logo de la empresa" class="logo" />
             <div class="company-info">
                 <p><strong>LA CHIPIQUERA Cooperativa de trabajo Ltda</strong></p>
                 <p>Carril Costa de Araujo S/N - Puente de hierro - Guaymallén</p>

@@ -110,7 +110,7 @@ export const pdf2Template = (order) => {
     <div class="container">
         <h1>COMPROBANTE</h1>
         <div class="header">
-            <img src=${/assets/LOGO-CHIPI.svg} alt="Logo de la empresa" class="logo" />
+            <img src="/assets/LOGO-CHIPI.svg" alt="Logo de la empresa" class="logo" />
             <div class="company-info">
                 <p><strong>LA CHIPIQUERA</strong></p>
                 <p>Carril Costa de Araujo S/N</p>                      

@@ -79,13 +79,13 @@ export const pdf2Template = (order) => {
             font-style: italic;
         }
         .signatures {
-            display: flex;
+            display: flexbox;
             justify-content: space-between;
             margin-top: 40px;
         }
         .signature {
             text-align: center;
-            width: 40%;
+            width: 20%;
         }
         .signature-line {
             border-top: 1px solid #000;
@@ -110,11 +110,10 @@ export const pdf2Template = (order) => {
     <div class="container">
         <h1>COMPROBANTE</h1>
         <div class="header">
-            <img src="/assets/LOGO-CHIPI.svg" alt="Logo de la empresa" class="logo" />
+            <img src=${/assets/LOGO-CHIPI.svg} alt="Logo de la empresa" class="logo" />
             <div class="company-info">
-                <p><strong>EMPRESA S.A.</strong></p>
-                <p>Calle Ejemplo 123, Ciudad</p>
-                <p>CUIT: XX-XXXXXXXX-X</p>
+                <p><strong>LA CHIPIQUERA</strong></p>
+                <p>Carril Costa de Araujo S/N</p>                      
             </div>
             <div>
                 <p><strong>Comprobante N°:</strong> ${order.serie}</p>
@@ -176,7 +175,7 @@ export const pdf2Template = (order) => {
             </tbody>
         </table>
 
-        <p class="total">Precio Final: $${order.total.toFixed(2)}</p>
+        <h3> class="total">Precio Final: $${order.total.toFixed(2)} </h3>
 
         <div class="signatures">
             <div class="signature">

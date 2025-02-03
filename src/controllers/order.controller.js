@@ -203,7 +203,7 @@ const mailing = async (order) => {
       text: `Hola ${order.client}, adjunto el comprobante de tu compra.`,
       attachments: [
         {
-          filename: `Remito-${order.serie}.pdf`,
+          filename: `Comprobante-${order.serie}.pdf`,
           content: Buffer.from(order.attach, "base64"),
         },
       ],

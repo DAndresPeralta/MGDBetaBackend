@@ -54,7 +54,7 @@ export const isValidPassword = async (password, hashedPassword) => {
 export const generateToken = (user) => {
   try {
     if (!user) return;
-    const token = jwt.sign(user, config.privateKey, { expiresIn: "1h" });
+    const token = jwt.sign(user, config.privateKey, { expiresIn: "4h" });
     return token;
   } catch (error) {
     logger.error(`Error al generar el token: ${error.message}`);

@@ -26,7 +26,7 @@ export const loginUserController = (req, res, next) => {
       res.cookie("jwt", access_token, {
         httpOnly: true,
         secure: true,
-        // maxAge: 3600000,
+        maxAge: 4 * 60 * 60 * 1000,
         sameSite: "none", //VER para LOCAL - usar "lax" o borrar atributo
         domain: "mgdbetabackend.onrender.com",
         path: "/",

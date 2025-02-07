@@ -258,7 +258,8 @@ export const getOrderByIdController = async (req, res) => {
 
 export const createOrderController = async (req, res) => {
   try {
-    const { date, client, cuil, email, taxpayer, product } = req.body;
+    const { date, client, cuil, email, taxpayer, product, sendEmail } =
+      req.body;
 
     const lastOrder = await getLastOrder();
 
@@ -290,7 +291,7 @@ export const createOrderController = async (req, res) => {
 
     const result = await createOrder(order);
 
-    await mailing(order);
+    if (sendEmail === true) await mailing(order);
 
     logger.info("Orden creada con éxito.");
     res.send({ result });
@@ -338,7 +339,8 @@ export const regeneratePDF = async (req, res) => {
 export const updateOrderController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, client, cuil, email, taxpayer, product } = req.body;
+    const { date, client, cuil, email, taxpayer, product, sendEmail } =
+      req.body;
 
     // Elimino el attach previo a la modificación.
     await deleteAttachOrder(id);
@@ -365,6 +367,12 @@ export const updateOrderController = async (req, res) => {
     logger.warn(`Orden encontrada para modificar: ${order}`);
 
     Object.assign(order, update);
+
+    // Si el toggle viene true, se genera el pdf (almacenandoce en DB) y se envia por mail al cliente.
+    if (sendEmail === true) {
+      order.attach = await createHtmlPDF(order);
+      await mailing(order);
+    }
 
     const result = await updateOrder(id, order);
     logger.info("Orden actualizada con éxito.");

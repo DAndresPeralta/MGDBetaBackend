@@ -2,15 +2,19 @@
 import orderBetaModel from "../models/order.model.js";
 
 export const getAllOrders = async () => {
-  return await orderBetaModel.find({ status: true });
+  return await orderBetaModel.find({ status: true }).populate("client").lean();
 };
 
 export const getOrderById = async (id) => {
-  return await orderBetaModel.findById({ _id: id });
+  return await orderBetaModel.findById({ _id: id }).populate("client").lean();
 };
 
 export const getOrderBySerie = async (serie) => {
   return await orderBetaModel.findOne({ serie: serie });
+};
+
+export const getOrderAttachById = async (id) => {
+  return await orderBetaModel.findById({ _id: id });
 };
 
 export const getLastOrder = async () => {

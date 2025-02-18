@@ -5,12 +5,13 @@ const orderBetaCollection = "orderBeta";
 
 const orderBetaSchema = new mongoose.Schema(
   {
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "clientBeta",
+      default: [],
+    },
     serie: String,
     date: Date,
-    client: String,
-    cuil: String,
-    email: String,
-    taxpayer: String,
     product: [
       {
         name: String,

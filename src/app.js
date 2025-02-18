@@ -14,6 +14,7 @@ import "./utils/cron.js";
 // --- Routers
 import userRouter from "./router/user.router.js";
 import orderRouter from "./router/order.router.js";
+import clientRouter from "./router/client.router.js";
 import authRouter from "./router/auth.router.js";
 import testRouter from "./router/prueba.router.js";
 
@@ -57,6 +58,7 @@ app.use("/api", userRouter);
 app.use("/api", authRouter);
 app.use("/api", orderRouter);
 app.use("/api", testRouter);
+app.use("/api", clientRouter);
 
 // --- Server up
 app.listen(PORT, () => {

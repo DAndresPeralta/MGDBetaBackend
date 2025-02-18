@@ -127,19 +127,19 @@ export const pdf2Template = (order) => {
         <table class="info-table">
             <tr>
                 <th>Cliente:</th>
-                <td>${order.client}</td>
+                <td>${order.client.companyName || order.client}</td>
                 <th>CUIL/CUIT:</th>
-                <td>${order.cuil}</td>
+                <td>${order.client.cuil}</td>
             </tr>
             <tr>
                 <th>Domicilio:</th>
-                <td colspan="3"></td>
+                <td colspan="3">${order.client.address || ""}</td>
             </tr>
             <tr>
                 <th>Condición IVA:</th>
-                <td>${order.taxpayer}</td>
+                <td>${order.client.taxpayer || order.taxpayer}</td>
                 <th>Email:</th>
-                <td>${order.email}</td>
+                <td>${order.client.email || order.email}</td>
             </tr>
         </table>
 

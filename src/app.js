@@ -33,7 +33,7 @@ app.use(passport.initialize());
 initializPassport();
 app.use(
   cors({
-    origin: "https://mgd-beta-front.vercel.app",
+    origin: config.corsOrigin,
     methods: "GET, POST, PUT, DELETE",
     credentials: true,
     allowedHeaders: "Content-Type, Authorization, Set-Cookie",

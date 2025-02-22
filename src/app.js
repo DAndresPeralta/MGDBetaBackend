@@ -25,13 +25,13 @@ import initializPassport from "./config/passport.config.js";
 // --- Ppal. Settings
 const app = express();
 const PORT = config.port;
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser(config.cookieSecret));
 app.use(passport.initialize());
 initializPassport();
-console.log(config.corsOrigin);
 app.use(
   cors({
     origin: config.corsOrigin,

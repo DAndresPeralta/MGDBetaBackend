@@ -31,6 +31,7 @@ app.use(express.static("public"));
 app.use(cookieParser(config.cookieSecret));
 app.use(passport.initialize());
 initializPassport();
+console.log(config.corsOrigin);
 app.use(
   cors({
     origin: config.corsOrigin,

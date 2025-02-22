@@ -1,6 +1,10 @@
 import dotenv from "dotenv";
+import logger from "../utils/logger.js";
+// dotenv.config();
 
-dotenv.config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
+
+logger.info(`Ambiente: ${process.env.NODE_ENV}`);
 
 export default {
   port: process.env.PORT,

@@ -1,19 +1,38 @@
 //-- Module
 import { check } from "express-validator";
 import { validationResult } from "express-validator";
+import logger from "../utils/logger.js";
 
 const chars = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ"´().-\s]*$/;
 
-export const validateCreateOrder = [
-  check("product").exists().isArray().not().isEmpty(),
-  check("product.*.name")
+export const validateCreateClient = [
+  check("companyName")
     .exists()
     .not()
     .isEmpty()
     .isLength({ max: 128 })
     .matches(chars),
-  check("product.*.quantity").exists().isInt({ min: 1 }),
-  check("product.*.price").exists().isFloat({ min: 0.1 }),
+  check("cuil").exists().not().isEmpty().isLength({ min: 13 }, { max: 13 }),
+  check("email")
+    .exists()
+    .not()
+    .isEmpty()
+    .isEmail()
+    .isLength({ max: 128 })
+    .matches(/@/),
+  check("taxpayer")
+    .exists()
+    .not()
+    .isEmpty()
+    .customSanitizer((value) => value.toUpperCase())
+    .isIn([
+      "CONSUMIDOR FINAL",
+      "IVA EXCENTO",
+      "MONOTRIBUTISTA",
+      "RESPONSABLE INSCRIPTO",
+      "CONSUMIDOR FINAL - MAT. PRIMAS",
+      "PRESUPUESTO",
+    ]),
   (req, res, next) => {
     validateResult(req, res, next);
   },

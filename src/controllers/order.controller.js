@@ -7,7 +7,12 @@ import {
   updateOrder,
   updateOrderStatus,
   deleteAttachOrder,
+  getOrderAttachById,
 } from "../services/order.services.js";
+import {
+  deleteOrderFromClient,
+  getClientById,
+} from "../services/client.services.js";
 
 // -- Utils
 import logger from "../utils/logger.js";
@@ -104,6 +109,11 @@ const createHtmlPDF = async (order) => {
   }
 };
 
+const refactDate = (date) => {
+  const [day, month, year] = date.split("/");
+  return new Date(`${month}/${day}/${year}`);
+};
+
 // Puppeteer - almacena en Buffer
 const createPDFPuppeteer = async (order) => {
   try {
@@ -184,7 +194,7 @@ const createPDF = async (order) => {
   });
 };
 
-const mailing = async (order) => {
+const mailing = async (order, attach) => {
   try {
     const trasporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -198,13 +208,13 @@ const mailing = async (order) => {
 
     const mailOptions = {
       from: config.userEmail,
-      to: order.email,
+      to: order.client.email,
       subject: `Remito #${order.serie}`,
-      text: `Hola ${order.client}, adjunto el comprobante de tu compra.`,
+      text: `Hola ${order.client.companyName}, adjunto el comprobante de tu compra.`,
       attachments: [
         {
           filename: `Comprobante-${order.serie}.pdf`,
-          content: Buffer.from(order.attach, "base64"),
+          content: Buffer.from(attach, "base64"),
         },
       ],
     };
@@ -224,15 +234,17 @@ export const getAllOrdersController = async (req, res) => {
     if (result.length === 0) {
       throw CustomError.createError({
         name: "Empty DB",
-        message: "No se encontraron ordenes",
-        code: EErrors.EMPTY_DB,
+        message: "No se encontraron clientes",
+        code: EErrors.EMPTY_DB.code,
+        httpCode: EErrors.EMPTY_DB.httpCode,
       });
     }
     logger.info("Ordenes obtenidas con éxito.");
-    res.send({ result });
+    res.status(200).send({ result });
   } catch (error) {
     logger.error(`Error al obtener las ordenes: ${error.message}`);
-    res.send({ message: error.message });
+    const statusCode = error.httpCode || 500;
+    res.status(statusCode).send({ message: error.message, code: error.code });
   }
 };
 
@@ -243,25 +255,38 @@ export const getOrderByIdController = async (req, res) => {
     if (!result) {
       throw CustomError.createError({
         name: "Not Found",
-        message: "Orden no encontrada",
-        code: EErrors.NOT_FOUND,
+        message: "No se encontró el cliente",
+        code: EErrors.NOT_FOUND.code,
+        httpCode: EErrors.NOT_FOUND.httpCode,
       });
     }
 
     logger.info("Orden obtenida con éxito.");
-    res.send({ result });
+    res.status(200).send({ result });
   } catch (error) {
     logger.error(`Error al obtener la orden: ${error.message}`);
-    res.send({ message: error.message });
+    const statusCode = error.httpCode || 500;
+    res.status(statusCode).send({ message: error.message, code: error.code });
   }
 };
 
 export const createOrderController = async (req, res) => {
   try {
-    const { date, client, cuil, email, taxpayer, product, sendEmail } =
-      req.body;
+    const { clientId, date, product, sendEmail } = req.body;
 
+    // Traigo la ultima orden para incrementar la serie
     const lastOrder = await getLastOrder();
+    // Traigo el cliente seleccionado por el front para asignar a la orden - Pushear
+    const findClient = await getClientById(clientId);
+
+    if (!findClient) {
+      throw CustomError.createError({
+        name: "Not Found",
+        message: "No se encontró el cliente",
+        code: EErrors.NOT_FOUND.code,
+        httpCode: EErrors.NOT_FOUND.httpCode,
+      });
+    }
 
     const newSerieNumber = lastOrder
       ? serieIncrement(lastOrder.serie)
@@ -272,32 +297,48 @@ export const createOrderController = async (req, res) => {
       0
     );
 
-    let total = totalPrice(product, taxpayer);
+    let total = totalPrice(product, findClient.taxpayer);
 
     const order = {
       serie: newSerieNumber,
-      date: date ? new Date(date) : new Date(),
-      client,
-      cuil,
-      email,
-      taxpayer,
+      date: date ? new Date(refactDate(date)) : new Date(),
+      client: findClient._id, // Asigno el cliente a la orden - Pushear
       product,
       subtotal,
       total,
       status: true,
     };
 
-    order.attach = await createHtmlPDF(order);
+    // Creo un objeto con los datos de la order mas los datos del cliente para enviarlos a createHtmlPDF
+    const orderPdf = {
+      ...order,
+      client: {
+        companyName: findClient.companyName,
+        email: findClient.email,
+        cuil: findClient.cuil,
+        address: findClient.address,
+        taxpayer: findClient.taxpayer,
+      },
+    };
+
+    // Creo el PDF
+    order.attach = await createHtmlPDF(orderPdf);
 
     const result = await createOrder(order);
 
-    if (sendEmail === true) await mailing(order);
+    // Referencio en el cliente la orden para luego acceder a sus datos con populate - Pushear
+    findClient.orders.push(result._id);
+    await findClient.save();
+
+    // Envio opcional de mail
+    if (sendEmail === true) await mailing(orderPdf, order.attach);
 
     logger.info("Orden creada con éxito.");
-    res.send({ result });
+    res.status(200).send({ result });
   } catch (error) {
     logger.error(`Error al crear la orden: ${error.message}`);
-    res.send({ message: error.message });
+    const statusCode = error.httpCode || 500;
+    res.status(statusCode).send({ message: error.message, code: error.code });
   }
 };
 
@@ -305,12 +346,15 @@ export const viewPDFController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const order = await getOrderById(id);
+    // Get order with special service
+    const order = await getOrderAttachById(id);
+    // Get attach from order
     const pdf = order.attach;
     logger.info("PDF obtenido");
-
+    // Renderize config
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", 'inline; filename="archivo.pdf"');
+
     res.send(pdf);
   } catch (error) {
     logger.error(`Error al visualizar el PDF: ${error.message}`);
@@ -321,8 +365,11 @@ export const viewPDFController = async (req, res) => {
 export const regeneratePDF = async (req, res) => {
   try {
     const { id } = req.params;
+    // Get order from DB call
     let order = await getOrderById(id);
+    // Create pdf and adding to attach atribute
     order.attach = await createHtmlPDF(order);
+    // Persiste order with attach pdf created
     await updateOrder(id, order);
 
     const pdf = order.attach;
@@ -338,11 +385,15 @@ export const regeneratePDF = async (req, res) => {
 // -- Preliminar
 export const updateOrderController = async (req, res) => {
   try {
+    // Order Id
     const { id } = req.params;
-    const { date, client, cuil, email, taxpayer, product, sendEmail } =
-      req.body;
+    // clientId = Id Client
+    const { clientId, date, product, sendEmail } = req.body;
 
-    // Elimino el attach previo a la modificación.
+    // Traigo el cliente seleccionado por el front para asignar a la orden - Pushear
+    const findClient = await getClientById(clientId);
+
+    // Delete old attach from order to update
     await deleteAttachOrder(id);
 
     const subtotal = product.reduce(
@@ -350,28 +401,47 @@ export const updateOrderController = async (req, res) => {
       0
     );
 
-    let total = totalPrice(product, taxpayer);
+    let total = totalPrice(product, findClient.taxpayer);
 
     const update = {
-      date,
-      client,
-      cuil,
-      email,
-      taxpayer,
+      date: date ? new Date(refactDate(date)) : new Date(),
+      client: findClient._id,
       product,
       subtotal,
       total,
     };
 
+    // Get old order from DB call
     const order = await getOrderById(id);
-    logger.warn(`Orden encontrada para modificar: ${order}`);
+    // Delete old order from client model
+    await deleteOrderFromClient(order.client._id, id);
 
+    // Record by warn logger the order to update, to get a register
+    logger.warn(
+      `Orden encontrada para modificar: ${JSON.stringify(order, null, 2)}}`
+    );
+
+    // Merge old order with update order object
     Object.assign(order, update);
 
-    // Si el toggle viene true, se genera el pdf (almacenandoce en DB) y se envia por mail al cliente.
+    // Creo un objeto con los datos de la order mas los datos del cliente para enviarlos a createHtmlPDF
+    const orderPdf = {
+      ...order,
+      client: {
+        companyName: findClient.companyName,
+        email: findClient.email,
+        cuil: findClient.cuil,
+        taxpayer: findClient.taxpayer,
+      },
+    };
+
+    // Attach new order to new client
+    findClient.orders.push(id);
+    await findClient.save();
+
     if (sendEmail === true) {
-      order.attach = await createHtmlPDF(order);
-      await mailing(order);
+      order.attach = await createHtmlPDF(orderPdf);
+      await mailing(orderPdf, order.attach);
     }
 
     const result = await updateOrder(id, order);

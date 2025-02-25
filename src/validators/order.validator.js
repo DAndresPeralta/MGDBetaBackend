@@ -3,7 +3,7 @@ import { check } from "express-validator";
 import { validationResult } from "express-validator";
 import logger from "../utils/logger.js";
 
-const chars = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ"´().-\s]*$/;
+const chars = /^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ"´’().-\s]*$/;
 
 export const validateCreateOrder = [
   check("product").exists().isArray().not().isEmpty(),

@@ -7,7 +7,11 @@ import jwt, { ExtractJwt } from "passport-jwt";
 import { getUserByUsername } from "../services/user.services.js";
 
 // -- Utils
-import { coockieExtractor, isValidPassword } from "../utils/auth.js";
+import {
+  coockieExtractor,
+  isValidPassword,
+  refreshCookieExtractor,
+} from "../utils/auth.js";
 import config from "../config/dot.js";
 
 // -- Passport Settings
@@ -61,5 +65,22 @@ const initializePassport = () => {
     )
   );
 };
+
+passport.use(
+  "refresh",
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromExtractors([refreshCookieExtractor]),
+      secretOrKey: config.refreshPrivateKey,
+    },
+    async (jwt_payload, done) => {
+      try {
+        return done(null, jwt_payload);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
 
 export default initializePassport;

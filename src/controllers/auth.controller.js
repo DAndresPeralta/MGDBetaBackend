@@ -2,7 +2,7 @@
 import passport from "passport";
 
 // -- Modules
-import { generateToken } from "../utils/auth.js";
+import { generateRefreshToken, generateToken } from "../utils/auth.js";
 
 // -- Logger
 import logger from "../utils/logger.js";
@@ -22,6 +22,7 @@ export const loginUserController = (req, res, next) => {
       }
 
       const access_token = generateToken({ user });
+      const refresh_token = generateRefreshToken({ user });
 
       res.cookie("jwt", access_token, {
         httpOnly: true,
@@ -32,6 +33,14 @@ export const loginUserController = (req, res, next) => {
         path: "/",
 
         //   path: "/", // This line is to confirm
+      });
+
+      res.cookie("refreshToken", refresh_token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 86400000,
+        sameSite: "none",
+        path: "/api/refresh",
       });
 
       logger.info("Login exitoso");
@@ -64,6 +73,46 @@ export const authUserController = (req, res) => {
   }
 };
 
+export const refreshTokenController = (req, res, next) => {
+  try {
+    passport.authenticate(
+      "refresh",
+      { session: false },
+      (err, payload, info) => {
+        if (err) {
+          logger.error(`Error en Passport Refresh: ${err.message}`);
+          return res.status(500).json({ error: "Error en el servidor" });
+        }
+
+        if (!payload) {
+          logger.warn("Refresh Token expirado");
+          return res
+            .status(401)
+            .json({ error: info.message || "No autorizado" });
+        }
+
+        const newAccessToken = generateToken({ user: payload.user });
+
+        res.cookie("jwt", newAccessToken, {
+          httpOnly: true,
+          secure: true,
+          maxAge: 3600000,
+          sameSite: "none",
+        });
+
+        logger.info("Token renovado exitosamente");
+        return res.status(200).json({
+          status: "success",
+          message: "Token renovado exitosamente",
+        });
+      }
+    )(req, res, next);
+  } catch (error) {
+    logger.error(`Error al renovar token: ${error.message}`);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const logoutUserController = (req, res) => {
   try {
     res.clearCookie("jwt", {
@@ -72,6 +121,12 @@ export const logoutUserController = (req, res) => {
       sameSite: "none",
       domain: "mgdbetabackend.onrender.com",
       path: "/",
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      path: "/api/refresh",
     });
 
     if (!req.cookies.jwt) {

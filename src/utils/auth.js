@@ -53,16 +53,51 @@ export const isValidPassword = async (password, hashedPassword) => {
 
 export const generateToken = (user) => {
   try {
-    if (!user) return;
+    if (!user) {
+      throw CustomError.createError({
+        name: "Token Error",
+        message: "No se encontró el usuario",
+        code: EErrors.USER_NOT_FOUND.code,
+        httpCode: EErrors.USER_NOT_FOUND.httpCode,
+      });
+    }
+
     const token = jwt.sign(user, config.privateKey, { expiresIn: "4h" });
     return token;
   } catch (error) {
     logger.error(`Error al generar el token: ${error.message}`);
     throw CustomError.createError({
       name: "Token Error",
-      cause: error.message,
       message: "Error al generar el token",
-      code: EErrors.TOKEN_ERROR,
+      code: EErrors.TOKEN_ERROR.code,
+      httpCode: EErrors.TOKEN_ERROR.httpCode,
+    });
+  }
+};
+
+export const generateRefreshToken = (user) => {
+  try {
+    if (!user) {
+      throw CustomError.createError({
+        name: "Token Error",
+        message: "No se encontró el usuario",
+        code: EErrors.USER_NOT_FOUND.code,
+        httpCode: EErrors.USER_NOT_FOUND.httpCode,
+      });
+    }
+
+    const refreshToken = jwt.sign(user, config.refreshPrivateKey, {
+      expiresIn: "1d",
+    });
+
+    return refreshToken;
+  } catch (error) {
+    logger.error(`Error al generar el token: ${error.message}`);
+    throw CustomError.createError({
+      name: "Token Error",
+      message: "Error al generar el token",
+      code: EErrors.TOKEN_ERROR.code,
+      httpCode: EErrors.TOKEN_ERROR.httpCode,
     });
   }
 };
@@ -74,9 +109,9 @@ export const checkToken = (req, res, next) => {
     if (!authHeader) {
       throw CustomError.createError({
         name: "Token Error",
-        cause: error.message,
         message: "No se encontraron tokens",
-        code: EErrors.TOKEN_NOT_FOUND,
+        code: EErrors.TOKEN_NOT_FOUND.code,
+        httpCode: EErrors.TOKEN_NOT_FOUND.httpCode,
       });
     }
 
@@ -86,9 +121,9 @@ export const checkToken = (req, res, next) => {
       if (error) {
         throw CustomError.createError({
           name: "Token Error",
-          cause: error.message,
           message: "Token expirado",
-          code: EErrors.EXPIRED_TOKEN,
+          code: EErrors.EXPIRED_TOKEN.code,
+          httpCode: EErrors.EXPIRED_TOKEN.httpCode,
         });
       }
 
@@ -101,9 +136,9 @@ export const checkToken = (req, res, next) => {
     );
     throw CustomError.createError({
       name: "Token Error",
-      cause: error.message,
       message: "Error interno del servidor",
-      code: EErrors.INTERNAL_SERVER_ERROR,
+      code: EErrors.INTERNAL_SERVER_ERROR.code,
+      httpCode: EErrors.INTERNAL_SERVER_ERROR.httpCode,
     });
   }
 };
@@ -113,6 +148,16 @@ export const coockieExtractor = (req) => {
   if (req && req.cookies) {
     token = req.cookies["jwt"];
   }
+  return token;
+};
+
+export const refreshCookieExtractor = (req) => {
+  let token = null;
+
+  if (req && req.cookies) {
+    token = req.cookies["refreshToken"];
+  }
+
   return token;
 };
 
